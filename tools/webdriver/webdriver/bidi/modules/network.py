@@ -41,7 +41,9 @@ URLPattern = Union[URLPatternPattern, URLPatternString]
 class Network(BidiModule):
     @command
     def add_intercept(
-        self, phases: List[str], url_patterns: Optional[List[URLPattern]] = None
+            self,
+            phases: List[str],
+            url_patterns: Optional[List[URLPattern]] = None
     ) -> Mapping[str, Any]:
         params: MutableMapping[str, Any] = {
             "phases": phases,
@@ -56,6 +58,27 @@ class Network(BidiModule):
     def _add_intercept(self, result: Mapping[str, Any]) -> Any:
         assert result["intercept"] is not None
         return result["intercept"]
+
+    @command
+    def continue_request(self,
+                         request: str,
+                         method: Optional[str] = None,
+                         url: Optional[str] = None) -> Mapping[str, Any]:
+        params: MutableMapping[str, Any] = {
+            "request": request,
+        }
+
+        if method is not None:
+            params["method"] = method
+
+        if url is not None:
+            params["url"] = url
+
+        # TODO: Add body.
+        # TODO: Add cookies.
+        # TODO: Add headers.
+
+        return params
 
     @command
     def fail_request(self, request: str) -> Mapping[str, Any]:
