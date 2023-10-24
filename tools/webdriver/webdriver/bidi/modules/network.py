@@ -81,10 +81,11 @@ class Network(BidiModule):
         return params
 
     @command
-    def continue_response(self,
-                          request: str,
-                          reason_phrase: Optional[str] = None,
-                          status_code: Optional[int] = None) -> Mapping[str, Any]:
+    def continue_response(
+            self,
+            request: str,
+            reason_phrase: Optional[str] = None,
+            status_code: Optional[int] = None) -> Mapping[str, Any]:
         params: MutableMapping[str, Any] = {
             "request": request,
         }
@@ -104,6 +105,28 @@ class Network(BidiModule):
     @command
     def fail_request(self, request: str) -> Mapping[str, Any]:
         params: MutableMapping[str, Any] = {"request": request}
+        return params
+
+    @command
+    def provide_response(
+            self,
+            request: str,
+            reason_phrase: Optional[str] = None,
+            status_code: Optional[int] = None) -> Mapping[str, Any]:
+        params: MutableMapping[str, Any] = {
+            "request": request,
+        }
+
+        if reason_phrase is not None:
+            params["reasonPhrase"] = reason_phrase
+
+        if status_code is not None:
+            params["statusCode"] = status_code
+
+        # TODO: Add body.
+        # TODO: Add cookies.
+        # TODO: Add headers.
+
         return params
 
     @command
