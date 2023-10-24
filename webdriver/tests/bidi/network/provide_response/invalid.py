@@ -1,7 +1,6 @@
 import asyncio
 import pytest
 import webdriver.bidi.error as error
-from webdriver.bidi.modules.script import ScriptEvaluateResultException
 
 pytestmark = pytest.mark.asyncio
 
