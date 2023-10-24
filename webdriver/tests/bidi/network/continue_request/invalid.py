@@ -38,9 +38,9 @@ async def test_params_request_no_such_request(bidi_session, setup_network_test,
 
 
 @pytest.mark.parametrize("value", [False, 42, {}, []])
-async def test_params_method_invalid_type(bidi_session, value,
+async def test_params_method_invalid_type(bidi_session,
                                           setup_network_test, url, fetch,
-                                          wait_for_event, add_intercept):
+                                          wait_for_event, add_intercept, value):
     request = await create_blocked_request(setup_network_test, url,
                                            add_intercept, fetch,
                                            wait_for_event)
@@ -51,9 +51,9 @@ async def test_params_method_invalid_type(bidi_session, value,
 
 
 @pytest.mark.parametrize("value", [False, 42, {}, []])
-async def test_params_url_invalid_type(bidi_session, value, setup_network_test,
+async def test_params_url_invalid_type(bidi_session, setup_network_test,
                                        url, fetch, wait_for_event,
-                                       add_intercept):
+                                       add_intercept, value):
     request = await create_blocked_request(setup_network_test, url,
                                            add_intercept, fetch,
                                            wait_for_event)
@@ -64,9 +64,9 @@ async def test_params_url_invalid_type(bidi_session, value, setup_network_test,
 
 @pytest.mark.parametrize("protocol", ["http", "https"])
 @pytest.mark.parametrize("value", [":invalid", "#invalid"])
-async def test_params_url_invalid_value(bidi_session, protocol, value,
+async def test_params_url_invalid_value(bidi_session, protocol,
                                         setup_network_test, url, fetch,
-                                        wait_for_event, add_intercept):
+                                        wait_for_event, add_intercept, value):
     request = await create_blocked_request(setup_network_test, url,
                                            add_intercept, fetch,
                                            wait_for_event)
