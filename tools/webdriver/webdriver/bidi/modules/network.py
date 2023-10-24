@@ -60,6 +60,25 @@ class Network(BidiModule):
         return result["intercept"]
 
     @command
+    def continue_with_auth(
+            self,
+            request: str,
+            action: str,
+            credentials: Optional[Dict[str, str]] = None) -> Mapping[str, Any]:
+        params: MutableMapping[str, Any] = {
+            "request": request,
+            "action": action,
+        }
+
+        if action == "provideCredentials" and credentials is not None:
+            if "username" in credentials:
+                params["username"] = credentials["username"]
+            if "password" in credentials:
+                params["password"] = credentials["password"]
+
+        return params
+
+    @command
     def continue_request(self,
                          request: str,
                          method: Optional[str] = None,
