@@ -78,8 +78,8 @@ async def test_params_status_code_invalid_value(bidi_session,
                                                     status_code=value)
 
 
+# TODO: Add body.
 # TODO: Add cookies.
-# TODO: Add credentials.
 # TODO: Add headers.
 
 
