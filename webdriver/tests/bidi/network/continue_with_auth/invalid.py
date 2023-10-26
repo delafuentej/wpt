@@ -95,7 +95,7 @@ async def test_params_action_provideCredentials_invalid_credentials(
 
 async def setup_blocked_request_test(setup_network_test, url, add_intercept,
                                      fetch, wait_for_event):
-    await setup_network_test(events=["network.beforeRequestSent"])
+    await setup_network_test(events=["network.authRequired"])
 
     text_url = url(PAGE_EMPTY_TEXT)
     await add_intercept(
@@ -107,7 +107,7 @@ async def setup_blocked_request_test(setup_network_test, url, add_intercept,
     )
 
     asyncio.ensure_future(fetch(text_url))
-    event = await wait_for_event("network.beforeRequestSent")
+    event = await wait_for_event("network.authRequired")
     request = event["request"]["request"]
 
     return request
