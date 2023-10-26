@@ -39,7 +39,7 @@ async def test_params_request_no_such_request(bidi_session, setup_network_test,
                                                       action="cancel")
 
 
-@pytest.mark.parametrize("value", [False, 42, {}, []])
+@pytest.mark.parametrize("value", [None, False, 42, {}, []])
 async def test_params_action_invalid_type(bidi_session, setup_network_test,
                                           url, fetch, wait_for_event,
                                           add_intercept, value):
