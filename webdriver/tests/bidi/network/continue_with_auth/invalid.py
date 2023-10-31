@@ -1,8 +1,5 @@
-import asyncio
 import pytest
 import webdriver.bidi.error as error
-
-from .. import setup_blocked_request
 
 pytestmark = pytest.mark.asyncio
 
@@ -42,12 +39,8 @@ async def test_params_request_no_such_request(bidi_session, setup_network_test,
 
 
 @pytest.mark.parametrize("value", [None, False, 42, {}, []])
-async def test_params_action_invalid_type(bidi_session, setup_network_test,
-                                          url, fetch, wait_for_event,
-                                          add_intercept, value):
-    request = await setup_blocked_request("beforeRequestSent",
-                                          setup_network_test, url,
-                                          add_intercept, fetch, wait_for_event)
+async def test_params_action_invalid_type(setup_blocked_request, bidi_session, value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_with_auth(request=request,
@@ -55,12 +48,8 @@ async def test_params_action_invalid_type(bidi_session, setup_network_test,
 
 
 @pytest.mark.parametrize("value", ["", "foo"])
-async def test_params_action_invalid_value(bidi_session, setup_network_test,
-                                           url, fetch, wait_for_event,
-                                           add_intercept, value):
-    request = await setup_blocked_request("beforeRequestSent",
-                                          setup_network_test, url,
-                                          add_intercept, fetch, wait_for_event)
+async def test_params_action_invalid_value(setup_blocked_request, bidi_session, value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_with_auth(request=request,
@@ -92,12 +81,8 @@ async def test_params_action_invalid_value(bidi_session, setup_network_test,
                              "missing type",
                              "missing credentials",
                          ])
-async def test_params_action_provideCredentials_invalid_credentials(
-        bidi_session, setup_network_test, url, fetch, wait_for_event,
-        add_intercept, value):
-    request = await setup_blocked_request("beforeRequestSent",
-                                          setup_network_test, url,
-                                          add_intercept, fetch, wait_for_event)
+async def test_params_action_provideCredentials_invalid_credentials(setup_blocked_request, bidi_session, value):
+    request = await setup_blocked_request("beforeRequestSent",)
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_with_auth(

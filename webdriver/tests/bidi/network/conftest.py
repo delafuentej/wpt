@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import pytest
@@ -9,6 +10,7 @@ from webdriver.bidi.modules.script import ContextTarget
 RESPONSE_COMPLETED_EVENT = "network.responseCompleted"
 
 PAGE_EMPTY_HTML = "/webdriver/tests/bidi/network/support/empty.html"
+PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
 
 
 @pytest_asyncio.fixture
@@ -126,3 +128,26 @@ async def setup_network_test(
     # cleanup
     for remove_listener in listeners:
         remove_listener()
+
+
+@pytest_asyncio.fixture
+async def setup_blocked_request(setup_network_test, url, add_intercept, fetch, wait_for_event):
+    async def setup_blocked_request(phase):
+        await setup_network_test(events=[f"network.{phase}"])
+
+        text_url = url(PAGE_EMPTY_TEXT)
+        await add_intercept(
+            phases=[phase],
+            url_patterns=[{
+                "type": "string",
+                "pattern": text_url,
+            }],
+        )
+
+        asyncio.ensure_future(fetch(text_url))
+        event = await wait_for_event(f"network.{phase}")
+        request = event["request"]["request"]
+
+        return request
+
+    return setup_blocked_request
