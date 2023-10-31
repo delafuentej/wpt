@@ -40,7 +40,7 @@ async def test_params_request_no_such_request(bidi_session, setup_network_test,
 
 @pytest.mark.parametrize("value", [None, False, 42, {}, []])
 async def test_params_action_invalid_type(setup_blocked_request, bidi_session, value):
-    request = await setup_blocked_request("beforeRequestSent")
+    request = await setup_blocked_request("authRequired")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_with_auth(request=request,
@@ -49,7 +49,7 @@ async def test_params_action_invalid_type(setup_blocked_request, bidi_session, v
 
 @pytest.mark.parametrize("value", ["", "foo"])
 async def test_params_action_invalid_value(setup_blocked_request, bidi_session, value):
-    request = await setup_blocked_request("beforeRequestSent")
+    request = await setup_blocked_request("authRequired")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_with_auth(request=request,
@@ -82,7 +82,7 @@ async def test_params_action_invalid_value(setup_blocked_request, bidi_session, 
                              "missing credentials",
                          ])
 async def test_params_action_provideCredentials_invalid_credentials(setup_blocked_request, bidi_session, value):
-    request = await setup_blocked_request("beforeRequestSent",)
+    request = await setup_blocked_request("authRequired")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_with_auth(
