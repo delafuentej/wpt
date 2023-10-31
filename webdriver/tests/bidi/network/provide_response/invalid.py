@@ -37,13 +37,10 @@ async def test_params_request_no_such_request(bidi_session, setup_network_test,
 
 
 @pytest.mark.parametrize("value", [False, 42, {}, []])
-async def test_params_reason_phrase_invalid_type(bidi_session,
-                                                 setup_network_test, url,
-                                                 fetch, wait_for_event,
-                                                 add_intercept, value):
-    request = await setup_blocked_request_test(setup_network_test, url,
-                                               add_intercept, fetch,
-                                               wait_for_event)
+async def test_params_reason_phrase_invalid_type(setup_blocked_request,
+                                                 bidi_session,
+                                                 value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.provide_response(request=request,
@@ -51,13 +48,9 @@ async def test_params_reason_phrase_invalid_type(bidi_session,
 
 
 @pytest.mark.parametrize("value", [False, "s", {}, []])
-async def test_params_status_code_invalid_type(bidi_session,
-                                               setup_network_test, url, fetch,
-                                               wait_for_event, add_intercept,
+async def test_params_status_code_invalid_type(setup_blocked_request, bidi_session,
                                                value):
-    request = await setup_blocked_request_test(setup_network_test, url,
-                                               add_intercept, fetch,
-                                               wait_for_event)
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.provide_response(request=request,
@@ -65,13 +58,8 @@ async def test_params_status_code_invalid_type(bidi_session,
 
 
 @pytest.mark.parametrize("value", [-1, 4.3])
-async def test_params_status_code_invalid_value(bidi_session,
-                                                setup_network_test, url, fetch,
-                                                wait_for_event, add_intercept,
-                                                value):
-    request = await setup_blocked_request_test(setup_network_test, url,
-                                               add_intercept, fetch,
-                                               wait_for_event)
+async def test_params_status_code_invalid_value(setup_blocked_request, bidi_session, value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.provide_response(request=request,
@@ -81,23 +69,3 @@ async def test_params_status_code_invalid_value(bidi_session,
 # TODO: Add body.
 # TODO: Add cookies.
 # TODO: Add headers.
-
-
-async def setup_blocked_request_test(setup_network_test, url, add_intercept,
-                                     fetch, wait_for_event):
-    await setup_network_test(events=["network.beforeRequestSent"])
-
-    text_url = url(PAGE_EMPTY_TEXT)
-    await add_intercept(
-        phases=["beforeRequestSent"],
-        url_patterns=[{
-            "type": "string",
-            "pattern": text_url,
-        }],
-    )
-
-    asyncio.ensure_future(fetch(text_url))
-    event = await wait_for_event("network.beforeRequestSent")
-    request = event["request"]["request"]
-
-    return request

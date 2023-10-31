@@ -37,12 +37,9 @@ async def test_params_request_no_such_request(bidi_session, setup_network_test,
 
 
 @pytest.mark.parametrize("value", [False, 42, {}, []])
-async def test_params_method_invalid_type(bidi_session, setup_network_test,
-                                          url, fetch, wait_for_event,
-                                          add_intercept, value):
-    request = await setup_blocked_request_test(setup_network_test, url,
-                                               add_intercept, fetch,
-                                               wait_for_event)
+async def test_params_method_invalid_type(setup_blocked_request, bidi_session,
+                                          value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_request(request=request,
@@ -50,12 +47,8 @@ async def test_params_method_invalid_type(bidi_session, setup_network_test,
 
 
 @pytest.mark.parametrize("value", [False, 42, {}, []])
-async def test_params_url_invalid_type(bidi_session, setup_network_test, url,
-                                       fetch, wait_for_event, add_intercept,
-                                       value):
-    request = await setup_blocked_request_test(setup_network_test, url,
-                                               add_intercept, fetch,
-                                               wait_for_event)
+async def test_params_url_invalid_type(setup_blocked_request, bidi_session, value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_request(request=request, url=value)
@@ -63,12 +56,8 @@ async def test_params_url_invalid_type(bidi_session, setup_network_test, url,
 
 @pytest.mark.parametrize("protocol", ["http", "https"])
 @pytest.mark.parametrize("value", [":invalid", "#invalid"])
-async def test_params_url_invalid_value(bidi_session, protocol,
-                                        setup_network_test, url, fetch,
-                                        wait_for_event, add_intercept, value):
-    request = await setup_blocked_request_test(setup_network_test, url,
-                                               add_intercept, fetch,
-                                               wait_for_event)
+async def test_params_url_invalid_value(setup_blocked_request, bidi_session, protocol, value):
+    request = await setup_blocked_request("beforeRequestSent")
 
     with pytest.raises(error.InvalidArgumentException):
         await bidi_session.network.continue_request(
@@ -78,23 +67,3 @@ async def test_params_url_invalid_value(bidi_session, protocol,
 # TODO: Add body.
 # TODO: Add cookies.
 # TODO: Add headers.
-
-
-async def setup_blocked_request_test(setup_network_test, url, add_intercept,
-                                     fetch, wait_for_event):
-    await setup_network_test(events=["network.beforeRequestSent"])
-
-    text_url = url(PAGE_EMPTY_TEXT)
-    await add_intercept(
-        phases=["beforeRequestSent"],
-        url_patterns=[{
-            "type": "string",
-            "pattern": text_url,
-        }],
-    )
-
-    asyncio.ensure_future(fetch(text_url))
-    event = await wait_for_event("network.beforeRequestSent")
-    request = event["request"]["request"]
-
-    return request
