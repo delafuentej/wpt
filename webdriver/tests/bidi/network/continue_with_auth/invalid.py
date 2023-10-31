@@ -67,18 +67,27 @@ async def test_params_action_invalid_value(bidi_session, setup_network_test,
 
 @pytest.mark.parametrize("value", [
     {
+        "type": "password",
         "password": "foo"
     },
     {
+        "type": "password",
         "username": "foo"
     },
-    {},
+    {
+        "type": "password",
+    },
+    {
+        "username": "foo",
+        "password": "bar",
+    },
     None,
 ],
                          ids=[
                              "missing username",
                              "missing password",
                              "missing username and password",
+                             "missing type",
                              "missing credentials",
                          ])
 async def test_params_action_provideCredentials_invalid_credentials(
