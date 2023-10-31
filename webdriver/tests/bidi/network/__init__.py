@@ -1,3 +1,5 @@
+import asyncio
+
 from .. import (
     any_bool,
     any_dict,
@@ -8,6 +10,8 @@ from .. import (
     any_string_or_null,
     recursive_compare,
 )
+
+PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
 
 
 def assert_bytes_value(bytes_value):
@@ -275,3 +279,23 @@ HTTP_STATUS_AND_STATUS_TEXT = [
     (504, "Gateway Timeout"),
     (505, "HTTP Version Not Supported"),
 ]
+
+
+async def setup_blocked_request(phase, setup_network_test, url, add_intercept,
+                                fetch, wait_for_event):
+    await setup_network_test(events=[f"network.{phase}"])
+
+    text_url = url(PAGE_EMPTY_TEXT)
+    await add_intercept(
+        phases=[phase],
+        url_patterns=[{
+            "type": "string",
+            "pattern": text_url,
+        }],
+    )
+
+    asyncio.ensure_future(fetch(text_url))
+    event = await wait_for_event(f"network.{phase}")
+    request = event["request"]["request"]
+
+    return request
