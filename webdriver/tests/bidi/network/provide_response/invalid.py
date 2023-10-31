@@ -85,11 +85,11 @@ async def test_params_status_code_invalid_value(bidi_session,
 
 async def setup_blocked_request_test(setup_network_test, url, add_intercept,
                                      fetch, wait_for_event):
-    await setup_network_test(events=["network.responseStarted"])
+    await setup_network_test(events=["network.beforeRequestSent"])
 
     text_url = url(PAGE_EMPTY_TEXT)
     await add_intercept(
-        phases=["responseStarted"],
+        phases=["beforeRequestSent"],
         url_patterns=[{
             "type": "string",
             "pattern": text_url,
@@ -97,7 +97,7 @@ async def setup_blocked_request_test(setup_network_test, url, add_intercept,
     )
 
     asyncio.ensure_future(fetch(text_url))
-    event = await wait_for_event("network.responseStarted")
+    event = await wait_for_event("network.beforeRequestSent")
     request = event["request"]["request"]
 
     return request
