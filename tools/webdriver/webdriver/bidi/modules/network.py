@@ -61,10 +61,11 @@ class Network(BidiModule):
 
     @command
     def continue_with_auth(
-            self,
-            request: str,
-            action: str,
-            credentials: Optional[Dict[str, str]] = None) -> Mapping[str, Any]:
+        self,
+        request: str,
+        action: str,
+        credentials: Optional[Dict[str, str]] = None
+    ) -> Mapping[str, Any]:
         params: MutableMapping[str, Any] = {
             "request": request,
             "action": action,
