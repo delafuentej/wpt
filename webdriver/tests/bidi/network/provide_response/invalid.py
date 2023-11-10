@@ -46,7 +46,7 @@ async def test_params_reason_phrase_invalid_type(setup_blocked_request,
                                                     reason_phrase=value)
 
 
-@pytest.mark.parametrize("value", [False, "s", {}, []])
+@pytest.mark.parametrize("value", [False, "foo", {}, []])
 async def test_params_status_code_invalid_type(setup_blocked_request, bidi_session,
                                                value):
     request = await setup_blocked_request("beforeRequestSent")
