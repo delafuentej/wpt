@@ -275,3 +275,8 @@ HTTP_STATUS_AND_STATUS_TEXT = [
     (504, "Gateway Timeout"),
     (505, "HTTP Version Not Supported"),
 ]
+
+PAGE_EMPTY_HTML = "/webdriver/tests/bidi/network/support/empty.html"
+PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
+
+RESPONSE_COMPLETED_EVENT = "network.responseCompleted"

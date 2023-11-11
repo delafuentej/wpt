@@ -4,13 +4,9 @@ import asyncio
 import pytest
 import pytest_asyncio
 
+from . import PAGE_EMPTY_HTML, PAGE_EMPTY_TEXT, RESPONSE_COMPLETED_EVENT
 from webdriver.bidi.error import NoSuchInterceptException
 from webdriver.bidi.modules.script import ContextTarget
-
-RESPONSE_COMPLETED_EVENT = "network.responseCompleted"
-
-PAGE_EMPTY_HTML = "/webdriver/tests/bidi/network/support/empty.html"
-PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
 
 
 @pytest_asyncio.fixture
