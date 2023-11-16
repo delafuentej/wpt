@@ -3,9 +3,7 @@ import random
 
 from tests.support.sync import AsyncPoll
 
-from .. import assert_response_event
-
-PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
+from .. import assert_response_event, PAGE_EMPTY_TEXT
 
 
 @pytest.mark.asyncio

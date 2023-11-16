@@ -3,9 +3,8 @@ import pytest
 from .. import (
     assert_before_request_sent_event,
     assert_response_event,
+    PAGE_EMPTY_TEXT
 )
-
-PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
 
 AUTH_REQUIRED_EVENT = "network.authRequired"
 

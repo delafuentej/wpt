@@ -5,11 +5,8 @@ import pytest
 from .. import (
     assert_before_request_sent_event,
     assert_response_event,
+    PAGE_EMPTY_TEXT,
 )
-
-PAGE_EMPTY_HTML = "/webdriver/tests/bidi/network/support/empty.html"
-PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
-PAGE_OTHER_TEXT = "/webdriver/tests/bidi/network/support/other.txt"
 
 
 @pytest.mark.asyncio

@@ -3,8 +3,6 @@ import webdriver.bidi.error as error
 
 pytestmark = pytest.mark.asyncio
 
-PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
-
 
 @pytest.mark.parametrize("value", [None, False, 42, {}, []])
 async def test_params_request_invalid_type(bidi_session, value):

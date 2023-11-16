@@ -278,5 +278,6 @@ HTTP_STATUS_AND_STATUS_TEXT = [
 
 PAGE_EMPTY_HTML = "/webdriver/tests/bidi/network/support/empty.html"
 PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
+PAGE_OTHER_TEXT = "/webdriver/tests/bidi/network/support/other.txt"
 
 RESPONSE_COMPLETED_EVENT = "network.responseCompleted"

@@ -1,9 +1,9 @@
 import pytest
 import webdriver.bidi.error as error
 
-pytestmark = pytest.mark.asyncio
+from .. import PAGE_EMPTY_TEXT
 
-PAGE_EMPTY_TEXT = "/webdriver/tests/bidi/network/support/empty.txt"
+pytestmark = pytest.mark.asyncio
 
 
 async def test_continue_request_no_such_request(bidi_session, setup_network_test,
