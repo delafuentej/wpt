@@ -57,6 +57,7 @@ dictionary MediaTrackSupportedConstraints {
   boolean echoCancellation = true;
   boolean autoGainControl = true;
   boolean noiseSuppression = true;
+  boolean voiceIsolation = true;
   boolean latency = true;
   boolean channelCount = true;
   boolean deviceId = true;
@@ -75,6 +76,7 @@ dictionary MediaTrackCapabilities {
   sequence<boolean> echoCancellation;
   sequence<boolean> autoGainControl;
   sequence<boolean> noiseSuppression;
+  sequence<boolean> voiceIsolation;
   DoubleRange latency;
   ULongRange channelCount;
   DOMString deviceId;
@@ -97,6 +99,7 @@ dictionary MediaTrackConstraintSet {
   ConstrainBoolean echoCancellation;
   ConstrainBoolean autoGainControl;
   ConstrainBoolean noiseSuppression;
+  ConstrainBoolean voiceIsolation;
   ConstrainDouble latency;
   ConstrainULong channelCount;
   ConstrainDOMString deviceId;
@@ -115,6 +118,7 @@ dictionary MediaTrackSettings {
   boolean echoCancellation;
   boolean autoGainControl;
   boolean noiseSuppression;
+  boolean voiceIsolation;
   double latency;
   unsigned long channelCount;
   DOMString deviceId;
