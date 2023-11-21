@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="help" href="https://www.w3.org/TR/css-color-4/#interpolation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSS animaitons with color-mix</title>
+</head>
+<style>
+  @keyframes missing-from {
+    to { background-color: rgb(0, 255, 0); }
+  }
+
+  @keyframes missing-to {
+    from { background-color: rgb(0, 255, 0); }
+  }
+
+  #target {
+    color: black;
+    background-color: color-mix(in srgb, white 50%, currentColor);
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-play-state: paused;
+    height: 100px;
+    width: 100px;
+  }
+  .missing-from {
+    animation-name: missing-from;
+  }
+
+  .missing-to {
+    animation-name: missing-to;
+  }
+</style>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/web-animations/testcommon.js"></script>
+<body>
+  <div id="target"></div>
+  <div id="test"></div>
+</body>
+<script>
+  'use strict';
+
+  // Accepts the color in either rgb(...) or color(srgb ...) form.
+  // The expected value is of the form { r: [0-1], g: [0-1]. b: [0-1] };
+  function assert_color(expected, message) {
+    const target = document.getElementById('target');
+    let color = getComputedStyle(target).backgroundColor;
+    let matches = color.match(/rgb\((\d+), (\d+), (\d+)\)/);
+    if (matches && matches.length == 4) {
+       const expected_r = Math.round(expected.r * 255);
+       const expected_g = Math.round(expected.g * 255);
+       const expected_b = Math.round(expected.b * 255);
+       const actual_r = parseInt(matches[1]);
+       const actual_g = parseInt(matches[2]);
+       const actual_b = parseInt(matches[3]);
+       let formatted_expectation
+           = `rgb(${expected_r}, ${expected_g}, ${expected_b})`;
+       assert_true(
+          Math.abs(actual_r - expected_r) <= 1 &&
+          Math.abs(actual_g - expected_g) <= 1 &&
+          Math.abs(actual_b - expected_b) <= 1,
+          `expected: ${formatted_expectation} actual ${color} -- ${message}`);
+       return;
+    }
+
+    matches = color.match(/color\(srgb ([^\s]+) ([^\s]+) ([^\s]+)\)/);
+    let formatted_expectation =
+        `color(srgb ${expected.r} ${expected.g} ${expected.b})`;
+    if (matches && matches.length == 4) {
+      assert_true(
+          Math.abs(parseFloat(matches[1]) - expected.r) <= 0.01 &&
+          Math.abs(parseFloat(matches[2]) - expected.g) <= 0.01 &&
+          Math.abs(parseFloat(matches[3]) - expected.b) <= 0.01,
+          `expected: ${formatted_expectation} actual ${color} -- ${message}`);
+      return;
+    }
+
+    assert_equals(color, formatted_expectation, message);
+  }
+
+  async function runAnimationTest(t, name) {
+    const target = document.getElementById('target');
+    assert_color({r: 0.5, g: 0.5, b: 0.5}, 'Initial border color');
+    target.classList.add(name);
+    t.add_cleanup(() => {
+      target.classList.remove(name);
+    });
+    const anim = document.getAnimations()[0];
+    await anim.ready;
+    anim.currentTime = 500;
+    //     from: color(srgb 0.5 0.5 0.5)
+    //       to: color(srgb 0 1 0)
+    // midpoint: color(srgb 0.25 0.75 0.25)
+    assert_color({r: 0.25, g: 0.75, b: 0.25},
+                 'Border color at 50% animation progress');
+  }
+
+window.onload = async () => {
+  promise_test(t => {
+    return runAnimationTest(t, 'missing-from');
+  }, 'Animate from neutral keyframe with color-mix');
+
+  promise_test(t => {
+    return runAnimationTest(t, 'missing-to');
+  }, 'Animate to neutral keyframe with color-mix');
+};
+
+</script>
+</html>

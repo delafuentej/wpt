@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="help" href="https://www.w3.org/TR/css-color-4/#interpolation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSS animaitons with color-mix</title>
+</head>
+<style>
+  #target-1, #target-2 {
+    color: black;
+    height: 100px;
+    width: 100px;
+    transition: background-color 1s linear;
+  }
+  #target-1,
+  #target-2.update-2 {
+    background-color: color-mix(in srgb, white 50%,
+                                currentColor);
+  }
+  #target-1.update-1,
+  #target-2 {
+    background-color: rgb(0, 255, 0);
+  }
+</style>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/web-animations/testcommon.js"></script>
+<body>
+  <div id="target-1"></div>
+  <div id="target-2"></div>
+</body>
+<script>
+  'use strict';
+
+  // Accepts the color in either rgb(...) or color(srgb ...) form.
+  // The expected value is of the form { r: [0-1], g: [0-1]. b: [0-1] };
+  function assert_color(target, expected, message) {
+    let color = getComputedStyle(target).backgroundColor;
+    let matches = color.match(/rgb\((\d+), (\d+), (\d+)\)/);
+    if (matches && matches.length == 4) {
+       const expected_r = Math.round(expected.r * 255);
+       const expected_g = Math.round(expected.g * 255);
+       const expected_b = Math.round(expected.b * 255);
+       const actual_r = parseInt(matches[1]);
+       const actual_g = parseInt(matches[2]);
+       const actual_b = parseInt(matches[3]);
+       let formatted_expectation
+           = `rgb(${expected_r}, ${expected_g}, ${expected_b})`;
+       assert_true(
+          Math.abs(actual_r - expected_r) <= 1 &&
+          Math.abs(actual_g - expected_g) <= 1 &&
+          Math.abs(actual_b - expected_b) <= 1,
+          `expected: ${formatted_expectation} actual ${color} -- ${message}`);
+       return;
+    }
+
+    matches = color.match(/color\(srgb ([^\s]+) ([^\s]+) ([^\s]+)\)/);
+    let formatted_expectation =
+        `color(srgb ${expected.r} ${expected.g} ${expected.b})`;
+    if (matches && matches.length == 4) {
+      assert_true(
+          Math.abs(parseFloat(matches[1]) - expected.r) <= 0.01 &&
+          Math.abs(parseFloat(matches[2]) - expected.g) <= 0.01 &&
+          Math.abs(parseFloat(matches[3]) - expected.b) <= 0.01,
+          `expected: ${formatted_expectation} actual ${color} -- ${message}`);
+      return;
+    }
+
+    assert_equals(color, formatted_expectation, message);
+  }
+
+  async function runAnimationTest(t, elementId, update) {
+    const elem = document.getElementById(elementId);
+    t.add_cleanup(() => {
+      elem.classList.remove(update);
+    });
+    await waitForNextFrame();
+    await waitForNextFrame();
+    elem.classList.add(update);
+    const anim = elem.getAnimations()[0];
+    await anim.ready;
+    anim.currentTime = 500;
+    assert_color(elem, {r: 0.25, g: 0.75, b: 0.25},
+                 'Border color at 50% animation progress');
+  }
+
+window.onload = async () => {
+  promise_test(t => {
+    //     from: color(srgb 0.5  0.5  0.5)
+    //       to: color(srgb 0    1    0)
+    // midpoint: color(srgb 0.25 0.75 0.25)
+    return runAnimationTest(t, 'target-1', 'update-1');
+  }, 'Transition from color-mix');
+
+  promise_test(t => {
+    //     from: color(srgb 0    1    0)
+    //       to: color(srgb 0.5  0.5  0.5)
+    // midpoint: color(srgb 0.25 0.75 0.25)
+    return runAnimationTest(t, 'target-2', 'update-2');
+  }, 'Transition to color-mix');
+};
+
+</script>
+</html>
