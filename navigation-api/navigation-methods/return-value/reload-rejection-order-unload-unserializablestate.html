@@ -18,7 +18,7 @@ promise_test(async t => {
 
   let assertionPromise;
   await new Promise(resolve => {
-    i.contentWindow.onunload = t.step_func(() => {
+    i.contentWindow.onpagehide = t.step_func(() => {
       assertionPromise = assertBothRejectDOM(t, i.contentWindow.navigation.reload({ state: document.body }), "DataCloneError", i.contentWindow);
       assert_equals(navigateEventCount, 1);
       resolve();
@@ -28,5 +28,5 @@ promise_test(async t => {
   assert_not_equals(assertionPromise, undefined);
   await assertionPromise;
 
-}, `reload() with an unserializable state inside onunload throws "DataCloneError", not "InvalidStateError"`);
+}, `reload() with an unserializable state inside onpagehide throws "DataCloneError", not "InvalidStateError"`);
 </script>
