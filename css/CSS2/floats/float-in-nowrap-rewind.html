@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<link rel="help" href="crbug.com/1499290">
+<style>
+#container {
+  font-family: monospace;
+  font-size: 20px;
+  hyphens: auto;
+  width: 28ch;
+  border: 1px solid blue;
+}
+
+span.wrapper {
+  white-space: pre;
+}
+
+.float {
+  float: right;
+  margin-right: -100px;
+}
+</style>
+<div id="container" lang="en-US">
+  <div>
+    Test test
+    comprehension<span class="wrapper"> 123<span class="float">float</span></span>
+    to grab
+  </div>
+  <div>
+    Test test
+    comprehension<span class="wrapper">[123<span class="float">float</span></span>
+    to grab
+  </div>
+</div>
