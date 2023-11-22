@@ -69,6 +69,16 @@ function define_tests() {
               });
           }, algorithmName + " with null length");
 
+          // Zero length
+          promise_test(function(test) {
+              return subtle.deriveBits({name: algorithmName, public: publicKeys[algorithmName]}, privateKeys[algorithmName], 0)
+              .then(function(derivation) {
+                  assert_true(equalBuffers(derivation, new Uint8Array([])), "Derived correct bits");
+              }, function(err) {
+                  assert_unreached("deriveBits failed with error " + err.name + ": " + err.message);
+              });
+          }, algorithmName + " with zero length");
+
           // Shorter than entire derivation per algorithm
           promise_test(function(test) {
               return subtle.deriveBits({name: algorithmName, public: publicKeys[algorithmName]}, privateKeys[algorithmName], 8 * sizes[algorithmName] - 32)
